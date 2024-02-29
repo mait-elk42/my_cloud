@@ -28,14 +28,15 @@ download_package() {
         mkdir -p "$dir/$package_name"
 
         # download the package if not already present
-        if [ $(ls ~/goinfre | grep "$package_name.tar" | wc -l ) -eq 0 ]; then
+        if [ $(ls ~/goinfre | grep "$tarname" | wc -l ) -eq 0 ]; then
             echo "Downloading $package_name ⬇️"
-            curl --create-dirs --progress-barc "$link" -o "$dir/$tarname"
+			trap "rm -rdf \"$dir/$tarname\" \"$dir/$package_name\"; return" SIGINT
+            curl --create-dirs --progress-bar "$link" -o "$dir/$tarname"
         fi
 
         # remove existing directory and extract the downloaded package
         rm -rdf "$dir/$package_name"
-        echo "Extracting $tarname 🔄"
+        echo "Extracting $dir/$tarname 🔄"
         tar -xf "$dir/$tarname" -C $dir
         echo "[$package_name] Ready To Use ✅"
     else
