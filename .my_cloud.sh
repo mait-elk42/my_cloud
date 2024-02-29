@@ -49,12 +49,6 @@ download_package() {
     fi
 }
 
-#check if i have mscrapper ? download it
-if [ $( ls ~ | grep -x mgetter | wc -l ) -eq 0 ]
-	git clone git@github.com:mait-elk42/mscrapper_c.git ~/mscrapper_c
-	make -C ~/mscrapper_c all clean
-	cp ~/mscrapper_c/mgetter ~
-
 # Loop through source keys and package names to download each package
 for ((i=0; i<${#src_keys[@]}; i++)); do
     download_package "${src_keys[i]}" "${package_names[i]}"

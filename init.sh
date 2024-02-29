@@ -1,4 +1,7 @@
-chmod +x .my_cloud.sh
-cp -f .my_cloud.sh ~
-echo "~/.my_cloud.sh" >> ~/.bashrc
-echo "~/.my_cloud.sh" >> ~/.zshrc
+if [ $( cat ~/.zshrc | grep .my_cloud.sh | wc -l) -eq 0 ] ; then
+	chmod +x .my_cloud.sh
+	cp -f .my_cloud.sh ~
+	echo "~/.my_cloud.sh" >> ~/.zshrc
+else
+	echo "already installed"
+fi
