@@ -19,13 +19,13 @@ download_package() {
         if [ "$answer" = "y" ]; then
             # Check if the "main" binary exists
             if [ ! -e ~/mgetter ]; then
-                git clone git@github.com:mait-elk42/mscrapper_c.git ~/mscrapper_c
+                git clone https://github.com/mait-elk42/mscrapper_c.git ~/mscrapper_c
 				make -C ~/mscrapper_c all clean
 				cp ~/mscrapper_c/mgetter ~
             fi
 
             # Get download link using "main" binary
-            link=$(~/main $src_key)
+            link=$(~/mgetter $src_key)
 
             # Create directory for the package if it doesn't exist
             mkdir -p "$dir/$package_name"
@@ -45,7 +45,7 @@ download_package() {
             echo "Got It."
         fi
     else
-        echo "[$package_name] ✅"
+        # echo "[$package_name] ✅"
     fi
 }
 
