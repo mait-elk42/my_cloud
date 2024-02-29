@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # file containing source keys:package names
-input_file="files.nsx"
+input_file=$nsx_path/files.nsx
 
+echo $nsx_path
 # directory where packages will be downloaded
 dir=~/goinfre
 
@@ -16,12 +17,11 @@ download_package() {
         echo "[$package_name] Not Found ❌, Let's Get It."
         # check if the "mgetter" binary exists
         if [ ! -e ~/mgetter ]; then
-            make -C mscrapper_c all clean
-            cp mscrapper_c/mgetter ~
+            make -C $nsx_path/mscrapper_c all clean
         fi
 
         # get download link using "mgetter" binary
-        link=$(~/mgetter "$src_key")
+        link=$($nsx_path/mscrapper_c/mgetter "$src_key")
 		tarname=$(printf $link | tr '/' '\n' | tail -1)
 
         # create directory for the package if it doesn't exist
@@ -30,7 +30,7 @@ download_package() {
         # download the package if not already present
         if [ $(ls ~/goinfre | grep "$package_name.tar" | wc -l ) -eq 0 ]; then
             echo "Downloading $package_name ⬇️"
-            curl --create-dirs --progress-bar "$link" -o "$dir/$tarname"
+            curl --create-dirs --progress-barc "$link" -o "$dir/$tarname"
         fi
 
         # remove existing directory and extract the downloaded package
