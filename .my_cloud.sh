@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # file containing source keys:package names
-input_file=~/files.nsx
+input_file="files.nsx"
 
 # directory where packages will be downloaded
 dir=~/goinfre
@@ -13,7 +13,7 @@ download_package() {
 
     # check if the package is already present in the directory
     if [ $(ls "$dir" | grep -x "$package_name" | wc -l ) -eq 0 ] ; then
-        echo "[$package_name] Not Found ❌, Get? (y/n) [None = no]"
+        echo "[$package_name] Not Found ❌, Let's Get It."
         # check if the "mgetter" binary exists
         if [ ! -e ~/mgetter ]; then
             make -C mscrapper_c all clean
@@ -22,6 +22,7 @@ download_package() {
 
         # get download link using "mgetter" binary
         link=$(~/mgetter "$src_key")
+		tarname=$(printf $link | tr '/' '\n' | tail -1)
 
         # create directory for the package if it doesn't exist
         mkdir -p "$dir/$package_name"
@@ -29,13 +30,13 @@ download_package() {
         # download the package if not already present
         if [ $(ls ~/goinfre | grep "$package_name.tar" | wc -l ) -eq 0 ]; then
             echo "Downloading $package_name ⬇️"
-            curl --create-dirs --progress-bar "$link" -o "$dir/$package_name.tar"
+            curl --create-dirs --progress-bar "$link" -o "$dir/$tarname"
         fi
 
         # remove existing directory and extract the downloaded package
         rm -rdf "$dir/$package_name"
-        echo "Extracting $package_name 🔄"
-        cd "$dir/" && tar -xf "$package_name.tar"
+        echo "Extracting $tarname 🔄"
+        tar -xf "$dir/$tarname" -C $dir
         echo "[$package_name] Ready To Use ✅"
     else
         echo "[$package_name] ✅"
@@ -44,7 +45,12 @@ download_package() {
 
 while IFS="" read -r p || [ -n "$p" ]
 do
-	src_key=$(echo $p | awk -F ':' '{print $1}')
-    package_name=$(echo $p | awk -F ':' '{print $2}')
+	if [ $p == ">VisualStudio" ]; then
+		src_key="82xgh4ycwwp06jw"
+		package_name="Visual Studio.app"
+	else
+		src_key=$(echo $p | awk -F ':' '{print $1}')
+		package_name=$(echo $p | awk -F ':' '{print $2}')
+	fi	
 	download_package "$src_key" "$package_name"
 done < $input_file
